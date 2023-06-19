@@ -1,0 +1,7 @@
+# This configuration file allows our pre-commit hooks to be used with pre-commit: http://pre-commit.com/
+
+- id: kubescape
+  name: a kubernetes security checker
+  description: Performs security checks on kuberentes resources
+  entry: hooks/kubescape.sh
+  language: script
