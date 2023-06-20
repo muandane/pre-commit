@@ -1,17 +1,13 @@
 #!/usr/bin/env bash
 
-set -e
-
-export PATH=$PATH:/usr/local/bin
-
 # Define the command to run
-COMMAND="kubescape scan ."
-OUTPUT="--output human > _temp.txt"
-
-FRAMEWORK_ARG="$1"
+COMMAND="kubescape scan . --output human "
+COMMAND_DEVOPS="kubescape scan framework DevOpsBest . --output human "
+COMMAND_MITRE="kubescape scan framework mitre . --output human "
+COMMAND_NSA="kubescape scan framework nsa . --output human "
 
 extract_summary() {
-  local output_file="\$1"
+  local output_file="_temp.txt"
   local failed_controls=$(grep -o 'Failed: [0-9]*' "$output_file" | grep -o '[0-9]*')
   local passed_controls=$(grep -o 'Passed: [0-9]*' "$output_file" | grep -o '[0-9]*')
   local action_required=$(grep -o 'Action Required: [0-9]*' "$output_file" | grep -o '[0-9]*')
@@ -20,7 +16,7 @@ extract_summary() {
 }
 
 classify_severity() {
-  local output_file="\$1"
+  local output_file="_temp.txt"
   local critical=$(grep -o 'Critical — [0-9]*' "$output_file" | grep -o '[0-9]*')
   local high=$(grep -o 'High — [0-9]*' "$output_file" | grep -o '[0-9]*')
   local medium=$(grep -o 'Medium — [0-9]*' "$output_file" | grep -o '[0-9]*')
@@ -30,7 +26,7 @@ classify_severity() {
 }
 
 print_table() {
-  local output_file="\$1"
+  local output_file="_temp.txt"
   local start_line=$(grep -n '^\+' "$output_file" | head -n 1 | cut -d ':' -f 1)
   local end_line=$(grep -n '^\+' "$output_file" | tail -n 1 | cut -d ':' -f 1)
 
@@ -40,20 +36,10 @@ print_table() {
 
 if [[ $(find . -type f \( -name "*.yml" -o -name "*.yaml" \) -not -name ".pre-commit-config.yaml") ]]; then
   # If files are found, execute the command here
-  if [ -z "$FRAMEWORK_ARG" ]; then
-    # Execute the command without the additional argument
-    $COMMAND "$OUTPUT"
-  else
-    # Execute the command with the additional argument
-    $COMMAND framework "$FRAMEWORK_ARG" "$OUTPUT"
-  fi
-
-  # Call the functions to extract summary and classify severity
-  extract_summary "_temp.txt"
-  classify_severity "_temp.txt"
-  print_table "_temp.txt"
-
+  eval "kubescape scan . --output human > _temp.txt"
+  extract_summary
+  classify_severity
+  print_table
 else
-  # If no files are found, do nothing
   echo "No files found."
 fi
