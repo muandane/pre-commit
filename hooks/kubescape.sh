@@ -5,7 +5,8 @@ set -e
 export PATH=$PATH:/usr/local/bin
 
 # Define the command to run
-COMMAND="kubescape scan --output human > _temp.txt"
+COMMAND="kubescape scan ."
+OUTPUT="--output human > _temp.txt"
 
 FRAMEWORK_ARG="$1"
 
@@ -41,10 +42,10 @@ if [[ $(find . -type f \( -name "*.yml" -o -name "*.yaml" \) -not -name ".pre-co
   # If files are found, execute the command here
   if [ -z "$FRAMEWORK_ARG" ]; then
     # Execute the command without the additional argument
-    $COMMAND .
+    $COMMAND "$OUTPUT"
   else
     # Execute the command with the additional argument
-    $COMMAND framework "$FRAMEWORK_ARG" .
+    $COMMAND framework "$FRAMEWORK_ARG" "$OUTPUT"
   fi
 
   # Call the functions to extract summary and classify severity
