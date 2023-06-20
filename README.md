@@ -26,13 +26,4 @@ That’s it! Now every time you commit a code change (.yaml/.yml file), the hook
 
 ## Kubescape arguments
 
-To choose which framework to run against you codebase you can add the framework in the `args:` :
-
-```yaml
-repos:
-  - repo: https://github.com/muandane/pre-commit
-    rev: <VERSION>
-    hooks:
-      - id: kubescape
-        args: ["a framework for example Mitre"]
-```
+TBD
