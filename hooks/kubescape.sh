@@ -36,7 +36,7 @@ print_table() {
 
 if [[ $(find . -type f \( -name "*.yml" -o -name "*.yaml" \) -not -name ".pre-commit-config.yaml") ]]; then
   # If files are found, execute the command here
-  eval "kubescape scan . --output human > _temp.txt"
+  eval "kubescape scan . --output human" >_temp.txt
   extract_summary
   classify_severity
   print_table
